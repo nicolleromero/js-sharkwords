@@ -12,14 +12,23 @@ let numWrong = 0;
 // Loop over the chars in `word` and create divs.
 //
 const createDivsForChars = (word) => {
-  // Replace this with your code
+  let letters = word.split('')
+  for (let i = 0; i < letters.length; i++) {
+    let letter = letters[i];
+    $('#word-container').append(`<div class="letter-box ${letter}"></div>`);
+  }
+
 };
 
 
 // Loop over each letter in `ALPHABET` and generate buttons.
 //
 const generateLetterButtons = () => {
-  // Replace this with your code
+  let letters = ALPHABET.split('')
+  for (let i = 0; i < letters.length; i++) {
+    let letter = letters[i];
+    $('#letter-buttons').append(`<button>${letter}</button>`);
+  }
 };
 
 
@@ -28,21 +37,27 @@ const generateLetterButtons = () => {
 // `buttonEl` is an `HTMLElement` object.
 //
 const disableLetterButton = (buttonEl) => {
-  // Replace this with your code
+  // const button = $(buttonEl);
+
+  $(buttonEl).attr('disabled', true);
 };
 
 
 // Return `true` if `letter` is in the word.
 //
 const isLetterInWord = (letter) => {
-  // Replace this with your code
+
+  return $(`div.${letter}`)[0] !== undefined;
+
 };
 
 
 // Called when `letter` is in word. Update contents of divs with `letter`.
 //
 const handleCorrectGuess = (letter) => {
-  // Replace this with your code
+
+  $(`div.${letter}`).html(letter);
+
 };
 
 
@@ -52,14 +67,37 @@ const handleCorrectGuess = (letter) => {
 // message. Otherwise, increment `numWrong` and update the shark image.
 //
 const handleWrongGuess = () => {
-  // Replace this with your code
+
+  numWrong += 1;
+
+  if (numWrong < 5) {
+    $(`#shark-img img`).attr('src', `/static/images/guess${numWrong}.png`);
+  }
+  if (numWrong === 5) {
+    $(`#shark-img img`).attr('src', `/static/images/guess${numWrong}.png`);
+    $('button').attr('disabled', true);
+    $('#play-again').css('display', '');
+  }
 };
 
 
 // Reset game state. Called before restarting the game.
 //
 const resetGame = () => {
-  // Replace this with your code
+
+  numWrong = 0;
+  $(`#shark-img img`).attr('src', `/static/images/guess${numWrong}.png`);
+
+  $('#play-again').css('display', 'none');
+
+  for (let char of $('#word-container').children()) {
+    char.remove();
+  }
+
+  for (let char of $('#letter-buttons').children()) {
+    char.remove();
+  }
+
 };
 
 
@@ -73,13 +111,19 @@ const resetGame = () => {
   generateLetterButtons();
 
   $('button').on('click', (evt) => {
-    const clickedBtn = evt.target;
+
+    const clickedBtn = $(evt.target);
+
+
     disableLetterButton(clickedBtn);
 
     const letter = clickedBtn.html();
 
+
     if (isLetterInWord(letter)) {
+      console.log("TRUE");
       handleCorrectGuess(letter);
+      console.log(letter);
     } else {
       handleWrongGuess(letter);
     }
